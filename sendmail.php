@@ -1,13 +1,4 @@
-<html>
-<head>
-</head>
 <?php
-$to=$_POST["to"];
-$subject=$_POST["subject"];
-$content=$_POST["content"];
-echo $to;
-echo $subject;
-echo $content;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
@@ -16,36 +7,37 @@ require 'PHPMailer/src/Exception.php';
 require 'PHPMailer/src/PHPMailer.php';
 require 'PHPMailer/src/SMTP.php';
 
+// 驗證表單資料
+$to = filter_var($_POST["to"], FILTER_VALIDATE_EMAIL);
+$subject = htmlspecialchars($_POST["subject"]);
+$content = htmlspecialchars($_POST["content"]);
+
+if (!$to) {
+    die("Invalid email address.");
+}
+
 $mail = new PHPMailer(true);
 
 try {
-    //Server settings
-    $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
-    $mail->isSMTP();                                            //Send using SMTP
-    $mail->Host       = 'smtp@gmail.com';                     //Set the SMTP server to send through
-    $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-    $mail->Username   = 'a1123352@mail.nuk.edu.tw';                     //SMTP username
-    $mail->Password   = 'khij fbrl gvwu ngpk';                               //SMTP password
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
-    $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+    // Server settings
+    $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+    $mail->isSMTP();
+    $mail->Host       = 'smtp.gmail.com';
+    $mail->SMTPAuth   = true;
+    $mail->Username   = 'a1123352@mail.nuk.edu.tw';
+    $mail->Password   = 'khij fbrl gvwu ngpk';
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+    $mail->Port       = 465;
 
-    //Recipients
+    // Recipients
     $mail->setFrom('a1123352@mail.nuk.edu.tw', 'Mailer');
-    //$mail->addAddress('chino931001@gmail.com', 'Joe User');     //Add a recipient
-    $mail->addAddress('chino931001@gmail.com');               //Name is optional
-    //$mail->addReplyTo('info@example.com', 'Information');
-    //$mail->addCC('cc@example.com');
-    //$mail->addBCC('bcc@example.com');
+    $mail->addAddress($to);
 
-    //Attachments
-    //$mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
-    //$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
-
-    //Content
-    $mail->isHTML(true);                                  //Set email format to HTML
-    $mail->Subject = 'Here is the subject';
-    $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
-    $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+    // Content
+    $mail->isHTML(true);
+    $mail->Subject = $subject;
+    $mail->Body    = $content;
+    $mail->AltBody = strip_tags($content);
 
     $mail->send();
     echo 'Message has been sent';
@@ -53,4 +45,10 @@ try {
     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
 }
 ?>
+<html>
+<head>
+</head>
+<body>
+<!-- 其他 HTML 內容 -->
+</body>
 </html>
