@@ -12,6 +12,6 @@ if (isset($_COOKIE["uNM"])) {
     echo 'Please input your username: <input type="text" name="userName" required><br>';
     echo 'Please input your password: <input type="password" name="userPwd" required><br>';
     echo '<input type="submit"><input type="reset">';
-    echo '</form>';
+    echo '</newform>';
 }
 ?>
